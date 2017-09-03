@@ -206,6 +206,7 @@ function setup(){
         noStroke();
         fill(187,0,0);
         rect(posX18+11,104,10,13);
+}
 /// cuadrados piel (izquierda)
         
       for( var posX19=26;posX19<=200;posX19=posX19+33){
@@ -326,7 +327,6 @@ function setup(){
         
         
         
-}
 }
   
 
