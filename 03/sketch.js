@@ -1,3 +1,7 @@
+function preload(){
+  miCancion=loadSound("sonido/parte del audio.mp3");
+}
+
 var x = 50;
 var dirX = 1;
 var velX = 10;
@@ -37,6 +41,9 @@ var tamX9 = 0;
 var tamY9 = 0;
 function setup() { 
   createCanvas(400, 400);
+miCancion.play();
+  comienzo=millis();
+  print(comienzo);
 } 
 
 function draw() { 
