@@ -1,11 +1,11 @@
 var LasVacas = [];
-var numVacas = 0;
+var numVacas = 30;
 
 var invasion = [];
 var numOvnis = 18;
 
 var LosMeteoritos = [];
-var numMeteoritos = 0;
+var numMeteoritos = 4;
 
 var LosMarcianos = [];
 var numMarcianitos = 4;
@@ -29,6 +29,9 @@ function setup() {
  for (var m = 0; m < numMarcianitos; m = m + 1){
    LosMarcianos[m] = new Marcianito();
  }
+ //for (var h = 0; h < numHumanos; h = h + 1){
+   //humanos[h] = new Humanoide();
+ //}
 
 } 
 
@@ -39,13 +42,13 @@ function draw() {
   for (var m = 0; m < numMarcianitos; m = m +1){
    LosMarcianos[m].dibujarse();
    LosMarcianos[m].moverse();
- for (var i = 0; i < numOvnis; i = i + 1){
-      var discentro = dist(invasion[i].x,invasion[i].y,Marcianito[m].x,Marcianito[m].y);
-      if (discentro < invasion[i].tamano/2){
-        Marcianito[m].dibujarse();
-        Marcianito[m].moverse();
-      }
-}
+ //for (var i = 0; i < numOvnis; i = i + 1){
+     // var discentro = dist(invasion[i].x,invasion[i].y,Marcianito[m].x,Marcianito[m].y);
+      //if (discentro < invasion[i].tamano/2){
+        //Marcianito[m].dibujarse();
+        //Marcianito[m].moverse();
+      //}
+
 }  
   push(); 
   for (var i = 0; i < numOvnis; i = i + 1){
@@ -78,7 +81,10 @@ function draw() {
     LosMeteoritos[s].moverse();
   }
    
-
+ //for (var h = 0; h < numHumanos; h = h +1){
+   // humanos[h].dibujarse();
+    //humanos[h].moverse();
+  //}
 
 }
   
@@ -258,16 +264,8 @@ function Meteoritos() {
     this.y = this.y+ (this.dirY*random(0, 4));
   }
 
+  
+  
+  
+  
 }
-
-
-
-
-    
-
-
-
-
-
-
-
