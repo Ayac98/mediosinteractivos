@@ -1,273 +1,255 @@
-var LasVacas = [];
-var numVacas = 0;
+var ship;
+var asteroids = [];
+var lasers = [];
+var miFondo;
 
-var invasion = [];
-var numOvnis = 18;
-
-var LosMeteoritos = [];
-var numMeteoritos = 0;
-
-var LosMarcianos = [];
-var numMarcianitos = 4;
-
-var humanos = [];
-var numHumanos = 15;
+function preload() {
+  miFondo = loadImage("assets/espacio.png");
+}
 
 
 function setup() { 
-  createCanvas(800, 800);
-
- for (var v = 0; v < numVacas; v = v +1){
-   LasVacas[v] = new Vaquita();
- }
- for (var i = 0; i < numOvnis; i = i + 1){
-   invasion[i] = new Ovni();
- }
- for (var s = 0; s < numMeteoritos; s = s + 1){
-   LosMeteoritos[s] = new Meteoritos();
- }
- for (var m = 0; m < numMarcianitos; m = m + 1){
-   LosMarcianos[m] = new Marcianito();
- }
-
+  createCanvas(windowWidth, windowHeight);
+  ship = new Ship();
+  for (var i = 0; i < 5; i++) {
+  	asteroids.push(new Asteroid());
+  }
 } 
 
 function draw() { 
-  background(220);
-
+  background(0);
   
-  for (var m = 0; m < numMarcianitos; m = m +1){
-   LosMarcianos[m].dibujarse();
-   LosMarcianos[m].moverse();
- for (var i = 0; i < numOvnis; i = i + 1){
-      var discentro = dist(invasion[i].x,invasion[i].y,Marcianito[m].x,Marcianito[m].y);
-      if (discentro < invasion[i].tamano/2){
-        Marcianito[m].dibujarse();
-        Marcianito[m].moverse();
-      }
+  image(miFondo,0,0);
+  
+  
+  for (var i = 0; i < asteroids.length; i++) {
+    if (ship.hits(asteroids[i])) {
+      console.log('ooops!');
+    }
+    asteroids[i].render();
+  	asteroids[i].update();
+    asteroids[i].edges();
+  }
+  
+  for (var i = lasers.length-1; i >= 0; i--) {
+    lasers[i].render();
+  	lasers[i].update();
+    if (lasers[i].offscreen()) {
+      lasers.splice(i, 1);
+    } else {
+    	for (var j = asteroids.length-1; j >= 0; j--) {
+    		if (lasers[i].hits(asteroids[j])) {
+    	    if (asteroids[j].r > 10) {
+    	  		var newAsteroids = asteroids[j].breakup();
+    	    	asteroids = asteroids.concat(newAsteroids);
+    	    }
+    	    asteroids.splice(j, 1);
+    	    lasers.splice(i, 1);
+    	    break;
+    		}
+    	}
+    }
+  }
+  
+  console.log(lasers.length);
+  
+  ship.render();
+  ship.turn();
+  ship.update();
+  ship.edges();
+  
+  
 }
-}  
-  push(); 
-  for (var i = 0; i < numOvnis; i = i + 1){
-    invasion[i].dibujarse();
-    invasion[i].moverse();
-      for (var r = 0; r < numMeteoritos; r = r +1) {
-        var discentro = dist(LosMeteoritos[r].x, LosMeteoritos[r].y, invasion[i].x, invasion[i].y);
-         if (discentro < LosMeteoritos[r].tamano/2) {
-           invasion[i].morir();
-         }
-      }
-  }
-  pop();
-  
-  push();
-  for (var v = 0; v < numVacas; v = v + 1){
-    LasVacas[v].dibujarse();
-    LasVacas[v].moverse();
-      for (var j = 0; j < numOvnis; j = j +1){
-        var distCentro1 = dist(invasion[j].x, invasion[j].y,LasVacas[v].x, LasVacas[v].y);
-          if (distCentro1 < invasion[j].tamano/2) {
-            LasVacas[v].morir();
-          }
-      }
-  }
-  pop();
-  
-  for (var s = 0; s < numMeteoritos; s = s +1){
-    LosMeteoritos[s].dibujarse();
-    LosMeteoritos[s].moverse();
-  }
-   
 
-
-}
-  
 function keyReleased() {
-  if (keyCode == 32) {
-    numOvnis = numOvnis + 1;
-    invasion[invasion.length] = new Ovni();
+  ship.setRotation(0);
+  ship.boosting(false);
+}
+
+function keyPressed() {
+  if (key == ' ') {
+  	lasers.push(new Laser(ship.pos, ship.heading));
+	} else if (keyCode == RIGHT_ARROW) {
+    ship.setRotation(0.1);
+  } else if (keyCode == LEFT_ARROW) {
+    ship.setRotation(-0.1);
+  } else if (keyCode == UP_ARROW) {
+    ship.boosting(true);
   }
 }
-/// Familia Marcianito
-function Marcianito() {
-  this.x = random(0, width);
-  this.y = random(0, height);
-  this.tamano = 15;
-  this.viva = true;
- 
-  this.dibujarse = function() {
-    if (this.viva == true) {
-      noStroke();
-      fill(56,151,66);
-      /// Cabeza Alien
-      ellipse(this.x, this.y-15,this.tamano+10,this.tamano+15);
-      /// cuerpo alien
-      rect(this.x - 5, this.y- 8,this.tamano - 6,this.tamano+15);
-      /// pieran izquierda 
-      rect(this.x - 4, this.y + 22,this.tamano - 12,this.tamano-3);
-      /// pierna derecha
-      rect(this.x , this.y + 22,this.tamano - 12,this.tamano-3);
-      /// brazo izquierdo
-      rect(this.x - 9, this.y + 2,this.tamano - 12,this.tamano-3);
-      /// brazo derecho
-      rect(this.x + 5, this.y + 2,this.tamano - 12,this.tamano-3);
-      /// ojos
-      fill(172,177,172);
-      ellipse(this.x - 5, this.y-15,this.tamano - 6,this.tamano - 6);  
-      ellipse(this.x + 5, this.y-15,this.tamano - 6,this.tamano - 6);
-      /// boca
-      fill(1,1,1);
-      rect(this.x - 4, this.y -8,this.tamano - 8,this.tamano-13);
-    
+
+function Ship() {
+  this.pos = createVector(width/2, height/2);
+  this.r = 20;
+  this.heading = 0;
+  this.rotation = 0;
+  this.vel = createVector(0, 0);
+  this.isBoosting = false;
+  
+  this.boosting = function(b) {
+    this.isBoosting = b;
+  }
+  
+  this.update = function() {
+    if (this.isBoosting) {
+    	this.boost();
+    }
+    this.pos.add(this.vel);
+    this.vel.mult(0.99);
+  }
+  
+  this.boost = function() {
+    var force = p5.Vector.fromAngle(this.heading);
+    force.mult(0.1);
+    this.vel.add(force);
+  }
+  
+  this.hits = function(asteroid) {
+    var d = dist(this.pos.x, this.pos.y, asteroid.pos.x, asteroid.pos.y);
+    if (d < this.r + asteroid.r) {
+      return true;
+    } else {
+      return false;
     }
   }
   
-  this.moverse = function() {
-    this.x = this.x + random(-1, 1);
-    this.y = this.y + random(-1, 1);
-  }
-
-  this.crecer = function() {
-    this.tamano = this.tamano + random(0.3, 0.6);
-  }
-
-  this.morir = function() {
-    this.viva = false;
-  }
-  }
-
-/// Familia Vaquitas
-function Vaquita() {
-  this.x = random(0, width);
-  this.y = random(0, height);
-  this.tamano = 40;
-  this.viva = true;
-  
-  this.dibujarse = function() {
-    if (this.viva == true) {
-      fill(107,67,34);
-      /// Cuerpo de la vaca
-      rect(this.x - 24, this.y- 19,this.tamano,this.tamano-15);
-      /// cabeza
-      rect(this.x - 40, this.y- 33,this.tamano-17,this.tamano-17);
-      /// pata delantera
-      rect(this.x - 21, this.y +6,this.tamano-28,this.tamano-17);
-      /// pata trasera
-      rect(this.x + 2, this.y +6,this.tamano-28,this.tamano-17);
-      /// cuerno
-      fill( 145,143,144);
-      rect(this.x - 26, this.y - 40,this.tamano-35,this.tamano - 29);
-      /// ojo
-      rect(this.x - 36, this.y - 27,this.tamano-34,this.tamano - 34);
-    }
-  }
-  
-  this.moverse = function() {
-    this.x = this.x + random(-1, 1);
-    this.y = this.y + random(-1, 1);
-  }
-
-  this.crecer = function() {
-    this.tamano = this.tamano + random(0.3, 0.6);
-  }
-
-  this.morir = function() {
-    this.viva = false;
-  }
-}
-// familia Predador
-function Ovni() {
-  this.x = random(0, width);
-  this.y = random(0, height);
-  this.dirX = 1;
-  this.dirY = 1;
-  this.tamano = 43;
- this.viva = true;
-
-  this.dibujarse = function() {
-    if (this.viva == true) {
-    fill(65,154,82);
-    ellipse(this.x, this.y, this.tamano+20, this.tamano);
-    fill(145,143,144);
-    ellipse(this.x, this.y + 11, this.tamano+96,this.tamano-22);
-  }
-
-  this.moverse = function() {
-    if (this.x >= width || this.x <= 0) {
-      this.dirX = -this.dirX;
-      this.x = this.x + (this.dirX*4);
-    }
-    if (this.y >= width || this.y <= 0) {
-      this.dirY = -this.dirY;
-      this.y = this.y + (this.dirY*4);
-    }
-
-    this.x = this.x + (this.dirX*random(0, 4));
-    this.y = this.y + (this.dirY*random(0, 4));
-  }
-
-  this.morir = function() {
-    this.viva = false;
-  }
-  }
-}
-function Meteoritos() {
-  this.x = random(0, width);
-  this.y = random(0, height);
-  this.dirX = 2;
-  this.dirY = 2;
-  this.tamano = 27;
-
-  this.dibujarse = function() {
+  this.render = function() {
     push();
-    noStroke(); 
-    fill(239,131,21);
-    rect(this.x+1,this.y-16,this.tamano+58, this.tamano);
-    fill(122,41,85);
-    ellipse(this.x+1, this.y-1, this.tamano, this.tamano);
-    rect(this.x-6,this.y-17,this.tamano-18, this.tamano-18);
-    rect(this.x-12,this.y-14,this.tamano-18, this.tamano-18);
-    rect(this.x-15,this.y-7,this.tamano-18, this.tamano-18);
-    rect(this.x-11,this.y,this.tamano-18, this.tamano-18);
-    rect(this.x-4,this.y+6,this.tamano-18, this.tamano-18);
-    rect(this.x+4,this.y+1,this.tamano-18, this.tamano-18);
-    rect(this.x+8,this.y-8,this.tamano-18, this.tamano-18);
-    rect(this.x+3,this.y-15,this.tamano-18, this.tamano-18);
-    fill(196,107,0);
-    ellipse(this.x+6,this.y+3,this.tamano-15,this.tamano-15);
-    ellipse(this.x-3,this.y-6,this.tamano-19,this.tamano-19);
-    pop();
-
-
-
-
+    translate(this.pos.x, this.pos.y);
+    rotate(this.heading + PI / 2);
+    fill(255,0,0);
+    stroke(255);
+    triangle(-this.r, this.r, this.r, this.r, 0, -this.r);
+   // fill(0,255,0);
+    //ellipse(-this.r, this.r, this.r, this.r, 0, -this.r);
+  pop();
+  }
   
-  }
-
-  this.moverse = function() {
-    if (this.x >= width || this.x <= 0) {
-      this.dirX = -this.dirX;
-      this.x = this.x + (this.dirX*2);
+  this.edges = function() {
+    if (this.pos.x > width + this.r) {
+      this.pos.x = -this.r;
+    } else if (this.pos.x < -this.r) {
+      this.pos.x = width + this.r;
     }
-    if (this.y >= width || this.y <= 0) {
-      this.dirY = -this.dirY;
-      this.y = this.y + (this.dirY*2);
+    if (this.pos.y > height + this.r) {
+      this.pos.y = -this.r;
+    } else if (this.pos.y < -this.r) {
+      this.pos.y = height + this.r;
     }
-
-    this.x = this.x+ (this.dirX*random(0, 4));
-    this.y = this.y+ (this.dirY*random(0, 4));
   }
-
+  
+  this.setRotation = function(a) {
+    this.rotation = a;
+  }
+  
+  this.turn = function() {
+    this.heading += this.rotation;
+  }
+  
 }
 
-
-
-
+function Asteroid(pos, r) {
+  if (pos) {
+    this.pos = pos.copy();
+  } else {
+  	this.pos = createVector(random(width), random(height));
+  }
+  if (r) {
+    this.r = r * 0.5;
+  } else {
+    this.r = random(15, 50);
+  }
+  
+  
+  this.vel = p5.Vector.random2D();
+  this.total = floor(random(5, 15));
+  this.offset = [];
+  for (var i = 0; i < this.total; i++) {
+    this.offset[i] = random(-this.r * 0.5, this.r * 0.5);
+  }
+  
+  this.update = function() {
+    this.pos.add(this.vel);
+  }
+  
+  this.render = function() {
+    push();
+    stroke(255);
+    noFill();
+    translate(this.pos.x, this.pos.y);
+    //ellipse(0, 0, this.r * 2);
+    beginShape();
+    for (var i = 0; i < this.total; i++) {
+      var angle = map(i, 0, this.total, 0, TWO_PI);
+      var r = this.r + this.offset[i];
+      var x = r * cos(angle);
+      var y = r * sin(angle);
+      vertex(x, y);
+    }
+    endShape(CLOSE);
     
+    
+    pop();
+  }
+  
+  this.breakup = function() {
+    var newA = [];
+    newA[0] = new Asteroid(this.pos, this.r);
+    newA[1] = new Asteroid(this.pos, this.r);
+    return newA;
+  }
+  
+  this.edges = function() {
+    if (this.pos.x > width + this.r) {
+      this.pos.x = -this.r;
+    } else if (this.pos.x < -this.r) {
+      this.pos.x = width + this.r;
+    }
+    if (this.pos.y > height + this.r) {
+      this.pos.y = -this.r;
+    } else if (this.pos.y < -this.r) {
+      this.pos.y = height + this.r;
+    }
+  }
+  
+}
+function Laser(spos, angle) {
+  this.pos = createVector(spos.x, spos.y);
+  this.vel = p5.Vector.fromAngle(angle);
+  this.vel.mult(10);
+  
+  this.update = function() {
+    this.pos.add(this.vel);
+  }
+  this.render = function() {
+    push();
+    stroke(24,255,60);
+  	strokeWeight(10); 
+    //fill(24,255,60);
+    point(this.pos.x, this.pos.y);
+    pop();
+  }
+  
+  this.hits = function(asteroid) {
+    var d = dist(this.pos.x, this.pos.y, asteroid.pos.x, asteroid.pos.y);
+    if (d < asteroid.r) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  this.offscreen = function() {
+    if (this.pos.x > width || this.pos.x < 0) {
+      return true;
+    }
+    if (this.pos.y > height || this.pos.y < 0) {
+      return true;
+    }
+    return false;
+  }
+  
+  
+}
 
-
-
-
-
-
-
+ 
