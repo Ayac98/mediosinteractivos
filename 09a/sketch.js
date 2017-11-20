@@ -4,7 +4,7 @@ var lasers = [];
 var miFondo;
 
 function preload() {
-  miFondo = loadImage("assets/espacio.png");
+  //miFondo = loadImage("assets/espacio.png");
 }
 
 
@@ -19,7 +19,7 @@ function setup() {
 function draw() { 
   background(0);
   
-  image(miFondo,0,0);
+  //image(miFondo,0,0);
   
   
   for (var i = 0; i < asteroids.length; i++) {
