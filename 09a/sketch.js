@@ -175,7 +175,7 @@ function Asteroid(pos, r) {
   this.render = function() {
     push();
     stroke(255);
-    noFill();
+     fill(0,180,97);
     translate(this.pos.x, this.pos.y);
     //ellipse(0, 0, this.r * 2);
     beginShape();
