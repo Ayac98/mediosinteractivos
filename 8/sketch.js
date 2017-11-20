@@ -110,17 +110,17 @@ function keyReleased() {
     numOvnis = numOvnis + 1;
     invasion[invasion.length] = new Ovni();
   }
-}
+
 /// Letra M para un nuevo marcianito
-function keyReleased() {
+//function keyReleased() {
   if (keyCode == 77) {
     numMarcianitos = numMarcianitos + 1;
     LosMarcianos[LosMarcianos.length] = new Marcianito();
   }
-}
+
 /// Letra V para crear vacas
 
-function keyReleased() {
+//function keyReleased() {
   if (keyCode == 86) {
     numVacas = numVacas + 1;
     LasVacas[LasVacas.length] = new Vaquita();
