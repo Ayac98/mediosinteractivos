@@ -3,9 +3,9 @@ var asteroids = [];
 var lasers = [];
 var miFondo;
 
-function preload() {
+//function preload() {
   //miFondo = loadImage("assets/espacio.png");
-}
+//}
 
 
 function setup() { 
