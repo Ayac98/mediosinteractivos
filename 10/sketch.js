@@ -469,7 +469,10 @@ function draw() {
           colorselect = 5;
 
         if (colorselect == 5) {
-        
+      
+          
+          
+          
         estado = INTRO;
       }
 
@@ -499,7 +502,12 @@ function mousePressed() {
           mouseY > boton5y && mouseY < boton5y + boton5tam) {
           colorselect = 5;
 
+    
+    ovni.dibujarse();
+    ovni.moverse();
         if (colorselect == 5) {
+          
+    ovni.viva = false;
     }
    } 
   }
