@@ -470,7 +470,11 @@ function draw() {
 
         if (colorselect == 5) {
       
+     ovni.dibujarse();
+    ovni.moverse();
+    ovni.viva = true;
           
+    puntaje = 0;
           
           
         estado = INTRO;
