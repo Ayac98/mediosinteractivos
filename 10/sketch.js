@@ -473,6 +473,8 @@ function draw() {
      ovni.dibujarse();
     ovni.moverse();
     ovni.viva = true;
+     
+    LasVacas.viva = true;
           
     puntaje = 0;
           
